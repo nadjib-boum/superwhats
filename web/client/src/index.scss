@@ -1,0 +1,295 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #c4dfdf;
+}
+.checkmark {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: #4bb71b;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #4bb71b;
+  animation: fill 0.4s ease-in-out 0.4s forwards,
+    scale 0.3s ease-in-out 0.9s both;
+  position: relative;
+  top: 5px;
+  right: 5px;
+  margin: 0 auto;
+}
+.checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #4bb71b;
+  fill: #fff;
+  animation: stroke 0.5s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+.login-success__span {
+  color: #4bb71b;
+  animation: fadeInUp 0.25s ease-out forwards;
+  opacity: 0;
+  transform: translateY(25px);
+}
+
+#spinner {
+  $spinner-color: #0f172a;
+  $spinner-size: 3em;
+
+  body {
+    background: #eceff1;
+    color: #212121;
+  }
+
+  .wrapper {
+    height: 100vh;
+    max-height: 600px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .message {
+    text-align: center;
+    margin-top: 0.25em;
+  }
+
+  #spinner {
+    width: $spinner-size;
+
+    #sGD stop {
+      stop-color: $spinner-color;
+    }
+
+    .path-solid {
+      stroke: $spinner-color;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scale {
+  0%,
+  100% {
+    transform: none;
+  }
+
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 30px #4bb71b;
+  }
+}
+
+.progress-circle {
+  svg {
+    max-width: 100%;
+    vertical-align: middle;
+  }
+
+  .App {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1.5em;
+  }
+
+  .App-content {
+    max-width: 400px;
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  .App-post-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  .App-post-list li {
+    display: block;
+  }
+
+  .App-post-list h3 {
+    text-transform: uppercase;
+  }
+
+  .App-post-list li:not(:last-child) {
+    margin-bottom: 1.5em;
+    padding-bottom: 1.5em;
+    border-bottom: 1px solid;
+  }
+  /*
+   * SVG Progress Indicator
+   *
+   * Set-up the indicator using SVG attributes that are 
+   * supported as properties in CSS.
+   *
+   * @since 07/07/22
+   * @link  https://codepen.io/_rahul/pen/BarobwE
+   */
+
+  .svg-pi-wrapper {
+    position: relative;
+  }
+
+  .svg-pi {
+    transform: rotate(-90deg); /* Fix the orientation */
+  }
+
+  /* Animated spinner version */
+  .svg-pi-indicator--spinner {
+    animation: spinner 0.75s linear infinite;
+    transform-origin: center;
+  }
+
+  .svg-pi-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .svg-pi-label__loading {
+    opacity: 0.5;
+    font-size: 0.75em;
+  }
+
+  .svg-pi-label__progress {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+
+  .svg-pi-label__loading,
+  .svg-pi-label__progress {
+    display: block;
+  }
+
+  /* Spinner animation */
+  @keyframes spinner {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

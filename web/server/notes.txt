@@ -1,0 +1,35 @@
+interface IWhatsappUtil {
+  qr: string;
+  client: Client;
+  start(): Promise<void>;
+  send(to: string, message: string): Promise<void>;
+  sendMedia(to: string, media: string): Promise<void>;
+  sendMediaGroup(to: string, media: string[]): Promise<void>;
+  sendTemplate(to: string, template: string): Promise<void>;
+  sendTemplateWithButton(
+    to: string,
+    template: string,
+    button: string
+  ): Promise<void>;
+  sendTemplateWithUrl(
+    to: string,
+    template: string,
+    url: string
+  ): Promise<void>;
+  sendTemplateWithUrlAndButton(
+    to: string,
+    template: string,
+    url: string,
+    button: string
+  ): Promise<void>;
+  sendTemplateWithUrlAndButtonAndFooter(
+    to: string,
+    template: string,
+    url: string,
+    button: string,
+    footer: string
+  ): Promise<void>;
+  sendTemplateWithUrlAndButtonAndFooterAndButton(
+    to: string,
+  )
+}

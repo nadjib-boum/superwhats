@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>EJS Example</title>
+  <style>
+    table {
+      margin: 20px auto;
+    }
+
+    td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    h3 {
+      margin: 0;
+    }
+
+    #qrcode {
+      height: 256px;
+      width: 256px;
+      margin: auto;
+    }
+
+    button {
+      cursor: pointer;
+      font-size: 17px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <form>
+    <table border="1">
+      <tbody>
+        <tr>
+          <td>
+            Authenticate
+          </td>
+          <td>
+            <button id="authBtn">start</button>
+          </td>
+        </tr>
+        <tr>
+          <td>QR</td>
+          <td>
+            <div id="qrcode"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>Phones List</td>
+          <td>
+            <input type="file" name="phonesList" id="phonesList">
+          </td>
+        </tr>
+        <tr>
+          <td>Message Template</td>
+          <td>
+            <input type="file" name="messageTemplate" id="messageTemplate">
+          </td>
+        </tr>
+        <tr>
+          <td>Message Media</td>
+          <td>
+            <input type="file" name="messageMedia" id="messageMedia">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Min Delay
+          </td>
+          <td>
+            <input type="number" id="minDelay" min="1">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Max Delay
+          </td>
+          <td>
+            <input type="number" id="maxDelay" min="2">
+          </td>
+        </tr>
+        <tr>
+          <td>Control</td>
+          <td>
+            <button id="playBtn" type="button">Play</button>
+            <button id="pauseBtn" type="button">Pause</button>
+            <button id="cancelBtn" type="button">Cancel</button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button id="sendBtn" type="submit">send</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+
+  <script src="//cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+  <script>
+
+    const authBtn = document.getElementById("authBtn");
+    const phonesFile = document.getElementById("phonesList");
+    const templateFile = document.getElementById("messageTemplate");
+    const messageMedia = document.getElementById("messageMedia");
+    const minDelay = document.getElementById("minDelay");
+    const maxDelay = document.getElementById("maxDelay");
+    const playBtn = document.getElementById("playBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const sendBtn = document.getElementById("sendBtn");
+    const qrcode = new QRCode("qrcode");
+
+
+    authBtn.onclick = authenticate;
+    playBtn.onclick = play;
+    pauseBtn.onclick = pause;
+    cancelBtn.onclick = cancel;
+    sendBtn.onclick = sendMessages;
+
+    async function sendMessages(e) {
+      e.preventDefault();
+      try {
+        const formData = new FormData();
+        formData.append("minDelay", minDelay.value);
+        formData.append("maxDelay", maxDelay.value);
+        formData.append("files", phonesFile.files[0]);
+        formData.append("files", templateFile.files[0]);
+        formData.append("files", messageMedia.files[0]);
+        const res = await fetch("/api/whatsapp/message/init", {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        if (!data.success) {
+          console.log("[-] Client Is Not Ready");
+          return;
+        }
+        console.log("[6] Whatsapp Service Ready To Start Messaging")
+        const msgEventSource = new EventSource("/api/whatsapp/message")
+        msgEventSource.addEventListener("open", () => {
+          console.log("[7] Messaging Request Initialized")
+        })
+
+        msgEventSource.addEventListener("message", (event) => {
+          console.log('[+] Message:', JSON.parse(event.data));
+        })
+
+        msgEventSource.addEventListener("error", () => {
+          console.log('Messaging End')
+          msgEventSource.close();
+        })
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+
+    async function authenticate(e) {
+      e.preventDefault();
+      console.log("[1] Client requested Whatsapp Service")
+      const res = await fetch("/api/whatsapp/init");
+      const data = await res.json();
+      if (data.success) {
+        console.log("[2] Whatsapp Service Initialized");
+        const authEventSource = new EventSource('/api/whatsapp/auth');
+        authEventSource.addEventListener("open", () => {
+          console.log("[3] Client Initilized Auth")
+        })
+
+        authEventSource.addEventListener("message", (event) => {
+          const data = JSON.parse(event.data);
+          if (data.msg == "QR_GENERATED") {
+            qrcode.makeCode(data.qr);
+            console.log("[4] QR generated")
+          }
+          if (data.msg == "AUTH_SUCCEED") {
+            console.log("[5] Auth Succedd");
+          }
+        })
+
+        authEventSource.addEventListener("error", () => {
+          console.log("[-] Auth Finished")
+          authEventSource.close();
+        })
+      }
+    }
+
+    async function play(e) {
+      e.preventDefault();
+      const res = await fetch("/api/whatsapp/message/play", {
+        method: "POST"
+      });
+      const data = await res.json();
+      console.log(data)
+    }
+
+    async function pause(e) {
+      e.preventDefault();
+      const res = await fetch("/api/whatsapp/message/pause", {
+        method: "POST"
+      });
+      const data = await res.json();
+      console.log(data)
+    }
+
+    async function cancel(e) {
+      e.preventDefault();
+      const res = await fetch("/api/whatsapp/message/cancel", {
+        method: "POST"
+      });
+      const data = await res.json();
+      console.log(data)
+    }
+
+  </script>
+
+</body>
+
+</html>
